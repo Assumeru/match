@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width" />
+	<title>Match</title>
+	<link href="./css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+	<script src="./js/jquery-2.1.3.min.js"></script>
+	<script src="./js/bootstrap.min.js"></script>
+	<script src="./js/store.js"></script>
+	<script src="./js/javascript.js"></script>
+</head>
+<body>
+	<div class="container">
+		<header>
+			<nav class="navbar navbar-inverse">
+				<ul class="nav navbar-nav">
+					<li><a href="#lists">Home</a></li>
+					<li data-type="test-only"><a href="#test">Test</a></li>
+				</ul>
+			</nav>
+		</header>
+		<noscript>
+			<section class="danger">
+				<p class="text-danger">
+					<span class="glyphicon glyphicon-warning-sign"></span>
+					Javascript needs to be enabled.
+				</p>
+			</section>
+		</noscript>
+		<div id="main">
+			<section id="lists">
+				<h2>Pick a list</h2>
+				<ol></ol>
+			</section>
+			<section id="list">
+				<h2 data-type="title"></h2>
+				<form>
+					<label class="form-control">
+						<input type="checkbox" name="double" checked /> Test every word twice.
+					</label>
+					<label class="form-control">
+						<input type="checkbox" name="repeat" checked /> Repeat words on failure.
+					</label>
+					<div class="form-control">
+						<label>
+							<input type="radio" name="direction" value="first" checked />
+							<span data-type="first"></span> to <span data-type="second"></span>
+						</label>
+						<label>
+							<input type="radio" name="direction" value="second" />
+							<span data-type="second"></span> to <span data-type="first"></span>
+						</label>
+					</div>
+					<input type="submit" value="Test" class="btn btn-success" />
+				</form>
+				<h3>Words</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th data-type="first"></th><th data-type="second"></th>
+						</tr>
+					</thead>
+					<tbody data-type="words"></tbody>
+				</table>
+				<h3>Results</h3>
+				<ul class="list-unstyled" data-type="results"></ul>
+			</section>
+			<section id="test">
+				<h2 data-type="title"></h2>
+				<h3 data-result="correct" class="text-success">Correct!</h3>
+				<h3 data-result="wrong" class="text-danger">Wrong, the correct answer was: <span class="text-success" data-type="correct"></span></h3>
+				<h3>Word: <span class="bg-info" data-type="current"></span></h3>
+				<form>
+					<input type="text" value="" name="answer" /> <input type="submit" value="Go" />
+				</form>
+				<p class="text-info"><strong data-type="number"></strong> words left.</p>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Try</th><th>Correct</th><th>Incorrect</th>
+						</tr>
+					</thead>
+					<tbody data-type="results">
+					</tbody>
+				</table>
+			</section>
+			<section id="results">
+				<h2>Results</h2>
+				<p>Grade: <strong data-type="grade"></strong></p>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Try</th><th>Correct</th><th>Incorrect</th>
+						</tr>
+					</thead>
+					<tbody data-type="results">
+					</tbody>
+				</table>
+			</section>
+		</div>
+	</div>
+</body>
+</html>
