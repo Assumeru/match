@@ -134,6 +134,14 @@
 		$(window).on('hashchange', renderPage);
 		$('#list form').submit(startTest);
 		$('#test form').submit(submitAnswer);
+		$('#new [data-type="clear"]').click(function() {
+			$('#new [data-type="words"]').empty();
+		});
+		$('#new [data-type="add"]').click(function() {
+			addNewListRows(5);
+		});
+		$('#new form').submit(submitNewList);
+		addNewListRows(10);
 		renderPage();
 	}
 
@@ -161,6 +169,8 @@
 			}
 		} else if($page == 'test' && $currentTest !== undefined) {
 			renderTestPage();
+		} else if($page == 'new') {
+			renderNewListPage();
 		} else {
 			renderListPage();
 		}
@@ -240,6 +250,10 @@
 		callTestOnly('hide');
 	}
 
+	function renderNewListPage() {
+		$('#new').show();
+	}
+
 	function saveGrade($id, $grade) {
 		var $results = $EEstore.getObject('results-'+$id, []);
 		$results.push({
@@ -294,6 +308,55 @@
 			$EEstore.removeItem('currentTest');
 			renderResultPage();
 		}
+	}
+
+	function submitNewList($e) {
+		var $n, $first, $second,
+		$list = {
+			id: $lists.length,
+			title: $('#new [name="title"]').val().trim(),
+			first: $('#new [name="first"]').val().trim(),
+			second: $('#new [name="second"]').val().trim(),
+			words: []
+		},
+		$rows = $('#new [data-type="words"] tr'),
+		$output = $('#new [data-type="file"] textarea');
+		$e.preventDefault();
+		if(!window.confirm('Are you sure?')) {
+			return;
+		}
+		for($n = 0; $n < $rows.length; $n++) {
+			$first = $($rows[$n]).find('input[name="first_word[]"]').val().trim();
+			$second = $($rows[$n]).find('input[name="second_word[]"]').val().trim();
+			if($first !== '' || $second !== '') {
+				$list.words.push({
+					first: $first,
+					second: $second
+				});
+			}
+		}
+		$lists.push($list);
+		$('#new [data-type="words"]').empty();
+		addNewListRows(10);
+		$('#new input[type="text"]').val('');
+		$('#new [data-type="file"]').show();
+		$output.val(JSON.stringify($lists, null, '\t'));
+		$output.focus();
+	}
+
+	function addNewListRows($num) {
+		var $first, $row,
+		$words = $('#new [data-type="words"]');
+		while($num > 0) {
+			$row = $('<tr><td><input type="text" placeholder="First word" name="first_word[]" /></td><td><input type="text" placeholder="Second word" name="second_word[]" /></td></tr>');
+			$words.append($row);
+			if($first === undefined) {
+				$first = $row.find('input[name="first_word[]"]');
+			}
+			$num--;
+		}
+		$first.focus();
+		$('#new [data-type="file"]').hide();
 	}
 
 	$sync.add(init);

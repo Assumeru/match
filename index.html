@@ -17,6 +17,7 @@
 			<nav class="navbar navbar-inverse">
 				<ul class="nav navbar-nav">
 					<li><a href="#lists">Home</a></li>
+					<li><a href="#new">New</a></li>
 					<li data-type="test-only"><a href="#test">Test</a></li>
 				</ul>
 			</nav>
@@ -98,6 +99,28 @@
 					<tbody data-type="results">
 					</tbody>
 				</table>
+			</section>
+			<section id="new">
+				<form>
+					<input type="text" name="title" placeholder="Title" required />
+					<table class="table">
+						<thead>
+							<tr>
+								<th><input type="text" name="first" placeholder="First" required /></th>
+								<th><input type="text" name="second" placeholder="Second" required /></th>
+							</tr>
+						</thead>
+						<tbody data-type="words">
+						</tbody>
+					</table>
+					<input data-type="add" class="btn btn-primary" type="button" value="Add 5 rows" />
+					<input data-type="clear" class="btn btn-danger" type="button" value="Clear" />
+					<input class="btn btn-success" type="submit" value="Save" />
+					<div data-type="file">
+						<hr />
+						<textarea class="form-control" style="height: 200px;"></textarea>
+					</div>
+				</form>
 			</section>
 		</div>
 	</div>
