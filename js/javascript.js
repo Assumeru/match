@@ -71,6 +71,12 @@
 			}
 			this.words[$n] = $cache[$key];
 		}
+		if(this.current !== null) {
+			$key = this.current.first + ' ' + this.current.second;
+			if($cache[$key] !== undefined) {
+				this.current = $cache[$key];
+			}
+		}
 	};
 	Test.prototype.next = function() {
 		this.current = this.words.pop();
@@ -108,15 +114,17 @@
 	}
 
 	function init() {
-		var $key,
+		var $n, $key,
 		$keys = ['answer', 'question', 'repeat', 'words', 'results', 'current', 'title', 'id'],
 		$test = $EEstore.getObject('currentTest', null);
 		if($test !== null && $test.words !== undefined && $test.words.length > 0) {
-			$currentTest = new Test([], {});
-			for($key in $keys) {
+			$currentTest = new Test({words: []}, {});
+			for($n = 0; $n < $keys.length; $n++) {
+				$key = $keys[$n];
 				$currentTest[$key] = $test[$key];
 			}
 			$currentTest.fix();
+			$('[data-result]').hide();
 			if(window.location.hash.replace('#', '') === '') {
 				window.location.hash = 'test';
 			}
