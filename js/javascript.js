@@ -141,6 +141,7 @@
 			addNewListRows(5);
 		});
 		$('#new form').submit(submitNewList);
+		$('#edit form').submit(submitEditList);
 		addNewListRows(10);
 		renderPage();
 	}
@@ -171,9 +172,33 @@
 			renderTestPage();
 		} else if($page == 'new') {
 			renderNewListPage();
+		} else if($page.indexOf('edit-') === 0) {
+			$parts = $page.split('-');
+			if($parts.length > 1 && $lists[$parts[1]] !== undefined) {
+				renderEditList($lists[$parts[1]], $parts[1]);
+			}
 		} else {
 			renderListPage();
 		}
+	}
+
+	function renderEditList($list, $index) {
+		var $n, $row,
+		$edit = $('#edit'),
+		$words = $edit.find('[data-type="words"]');
+		$words.empty();
+		$edit.find('input[name="title"]').val($list.title);
+		$edit.find('input[name="first"]').val($list.first);
+		$edit.find('input[name="second"]').val($list.second);
+		$edit.find('input[name="id"]').val($index);
+		$edit.find('[data-type="file"]').hide();
+		for($n = 0; $n < $list.words.length; $n++) {
+			$row = $('<tr><td><input type="text" placeholder="First word" name="first_word[]" /></td><td><input type="text" placeholder="Second word" name="second_word[]" /></td></tr>');
+			$row.find('[name="first_word[]"]').val($list.words[$n].first);
+			$row.find('[name="second_word[]"]').val($list.words[$n].second);
+			$words.append($row);
+		}
+		$edit.show();
 	}
 
 	function renderList($list) {
@@ -211,7 +236,9 @@
 		for($n = 0; $n < $lists.length; $n++) {
 			$li = $('<li></li>');
 			$a = $('<a href="#list-'+$n+'"></a>');
-			$a.text($lists[$n].title + ' ('+$lists[$n].first+' to '+$lists[$n].second+')');
+			$a.text($lists[$n].title + ' ('+$lists[$n].first+' to '+$lists[$n].second+') ');
+			$li.append($a);
+			$a = $('<a href="#edit-'+$n+'" class="btn btn-sm btn-primary">Edit</a>');
 			$li.append($a);
 			$list.append($li);
 		}
@@ -310,21 +337,32 @@
 		}
 	}
 
-	function submitNewList($e) {
-		var $n, $first, $second,
-		$list = {
-			id: $lists.length,
-			title: $('#new [name="title"]').val().trim(),
-			first: $('#new [name="first"]').val().trim(),
-			second: $('#new [name="second"]').val().trim(),
-			words: []
-		},
-		$rows = $('#new [data-type="words"] tr'),
-		$output = $('#new [data-type="file"] textarea');
+	function submitEditList($e) {
+		var $list,
+		$output = $('#edit [data-type="file"] textarea'),
+		$index = $('#edit input[name="id"]').val();
 		$e.preventDefault();
 		if(!window.confirm('Are you sure?')) {
 			return;
 		}
+		$list = getList($('#edit'));
+		$list.id = $lists[$index].id;
+		$lists[$index] = $list;
+		$('#edit [data-type="file"]').show();
+		$output.val(JSON.stringify($lists, null, '\t'));
+		$output.focus();
+	}
+
+	function getList($element) {
+		var $n, $first, $second,
+		$list = {
+			id: $lists.length,
+			title: $element.find('[name="title"]').val().trim(),
+			first: $element.find('[name="first"]').val().trim(),
+			second: $element.find('[name="second"]').val().trim(),
+			words: []
+		},
+		$rows = $element.find('[data-type="words"] tr');
 		for($n = 0; $n < $rows.length; $n++) {
 			$first = $($rows[$n]).find('input[name="first_word[]"]').val().trim();
 			$second = $($rows[$n]).find('input[name="second_word[]"]').val().trim();
@@ -335,6 +373,17 @@
 				});
 			}
 		}
+		return $list;
+	}
+
+	function submitNewList($e) {
+		var $list,
+		$output = $('#new [data-type="file"] textarea');
+		$e.preventDefault();
+		if(!window.confirm('Are you sure?')) {
+			return;
+		}
+		$list = getList($('#new'));
 		$lists.push($list);
 		$('#new [data-type="words"]').empty();
 		addNewListRows(10);
